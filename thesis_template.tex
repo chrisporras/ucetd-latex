@@ -7,12 +7,10 @@
 \usepackage{amsthm}
 
 %% Use these commands to set biographic information for the title page:
-\title{Thesis Title}
-\author{Thesis Author}
-\department{Thesis Department}
-\division{Thesis Division}
-\degree{Type of Degree}
-\date{Graduation Date}
+\author{Christian Alexander Porras}
+\department{Human Genetics}
+\division{Biological Sciences}
+\date{June 2020}
 
 %% Use these commands to set a dedication and epigraph text
 \dedication{Dedication Text}
@@ -36,24 +34,22 @@
 \listoffigures
 \listoftables
 
-\acknowledgments
-% Enter Acknowledgements here
+\include{acknowledgements}
 
-\abstract
-% Enter Abstract here
+\include{abstract}
 
 \mainmatter
 % Main body of text follows
 
-\chapter{Introduction}
-% Introductory stuff
+\include{intro}
 
-\chapter{A Chapter}
-\section{Introduction}
-% Intro to chapter one
+\include{methods}
+
+\include{results}
 
 % Format a LaTeX bibliography
 \makebibliography
+%\bibliography{references}
 
 % Figures and tables, if you decide to leave them to the end
 %\input{figure}

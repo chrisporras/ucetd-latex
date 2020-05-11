@@ -61,22 +61,26 @@
 		\begin{center}
 			\rule{0in}{0.55in} % Artificial extra [old=0.95in] margin. Why not vspace?
 			THE UNIVERSITY OF CHICAGO\\
-			\vspace{0.8in}
-			\MakeUppercase{\@title}\\
-			\vspace{0.8in}
+			\vspace{0.5in}
+			SIMULATING THE GEOGRAPHIC DISTRIBUTION\\
+			OF RARE DELETERIOUS ALLELES\\
+			\vspace{0.5in}
 			A DISSERTATION SUBMITTED TO\\
 			THE FACULTY OF THE DIVISION OF THE \MakeUppercase{\@division}\\
 			IN CANDIDACY FOR THE DEGREE OF\\
-			\MakeUppercase{\@degree}\\
+				BACHELOR OF ARTS IN BIOLOGICAL SCIENCES WITH HONORS\\
+                AND SPECIALIZATION IN QUANTITATIVE BIOLOGY\\
 			\ \\
 			DEPARTMENT OF \MakeUppercase{\@department}\\
-			\vspace{0.8in}
+			\vspace{0.4in}
 			BY\\
 			\MakeUppercase{\@author}\\
-			\vspace{0.8in}
+			\vspace{0.4in}
 			CHICAGO, ILLINOIS\\
 			\MakeUppercase{\@date}
-			\vspace*{0.45in}
+			\vspace*{0.2in}\\
+			\vspace{0.1in}
+			\includegraphics[scale=0.1]{img/University_of_Chicago_Coat_of_arms.png}
 		\end{center}
 	\end{titlepage}
 }
@@ -197,7 +201,7 @@
 	\newpage
 	\addcontentsline{toc}{chapter}{References}
 	\begin{singlespace}
-		\bibliography{ft2,master,refs}
+		\bibliography{references}
 		\bibliographystyle{plain}
 	\end{singlespace}
 }
