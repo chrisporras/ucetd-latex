@@ -75,10 +75,17 @@ McVean 2009, Battey 2019
 \newpage
 \section{Project Rationale and Significance}
 %% Need to reformat citations!
-Quantitative and population geneticists are interested in finding statistical associations between genetic variants and particular traits. Genome-wide association studies (GWAS) are one common method for drawing associative conclusions and are especially useful when attempting to predict an individual’s risk for disease. Disease GWAS function by comparing a large set of genotypes to the known disease phenotypes of members in the group. If members with a particular allele, or variant of a gene, are shown to have a significantly higher probability of also being in the group with the disease, then the GWAS supports the assumption that the allele increases one’s risk of developing the disease.	
+Quantitative and population geneticists are interested in finding statistical associations between genetic variants and particular traits. Genome-wide association studies (GWAS) are one common method for detecting associations and are especially useful when attempting to predict an individual’s risk for disease. Disease GWAS function by comparing a large set of genotypes to the known disease phenotypes of members in the group. If members with a particular allele, or variant of a gene, are shown to have a significantly higher probability of also being in the group with the disease, then the GWAS supports the hypothesis that the allele increases one’s risk of developing the disease. GWAS typically estimate the genetic effects on a phenotype by conducting a linear regression as follows:\cite{dudbridge_2013}
+
+\begin{equation}
+    \hat{\bf{Y}} = \boldsymbol{\hat{\beta}} \bf{G} + \boldsymbol{\epsilon} = \sum_{i=1}^{n} (\hat{\beta_i} G_i + \epsilon_i) 
+\end{equation}
+
+Where $\hat{\bf{Y}}$ represents the phenotype expressed as a linear combination of $n$ genetic loci in matrix $\bf{G}$ scaled by their effect sizes $\hat{\beta}$. Error terms are accounted for in $\boldsymbol{\epsilon}$ and are independent from $\bf{G}$. It is important to note that $\hat{\beta}$ is an estimated quantity. Researchers have proposed a number of statistical methods for estimating effect sizes. \cite{Meuwissen_et.al._2001}
 
 
-Conducting a GWAS requires a large set of genomic data which is gathered by a sampling process. As a result, association studies feature significant geographic sampling bias. For example, the UK BioBank contains samples of people who have migrated to the United Kingdom from around the world, but still represents a small fraction of global diversity [?]. Therefore, it is important to assess if GWAS results from geographically localized studies, such as those from the UK BioBank, can predict disease risk in other geographic regions. This project adds to the existing literature of theoretical models for studying deleterious alleles [8][9][10], but is one of the first to consider the influence of spatial sampling bias. Then, the goal of this project is to create a framework for evaluating how geographic sampling bias may affect the detection of rare deleterious alleles. Towards these ends, we propose to note the following aims:	
+
+Conducting a GWAS requires a large set of genomic data which is gathered by a sampling process. As a result, association studies feature significant geographic sampling bias. For example, the UK BioBank contains samples of people who have migrated to the United Kingdom from around the world, but still represents a small fraction of global diversity [?]. Therefore, it is important to assess if GWAS results from geographically localized studies, such as those from the UK BioBank, can predict disease risk in other geographic regions. This project adds to the existing literature of theoretical models for studying deleterious alleles [8][9][10], but is one of the first to consider the influence of spatial sampling bias. Then, the goal of this project is to create a framework for evaluating how geographic sampling bias may affect the detection of rare deleterious alleles. Towards these ends, we note the following aims:	
 
 \begin{enumerate}
     \item Develop theoretical models to derive the distribution of allele frequencies as a function of the spatial sampling scheme.
@@ -93,3 +100,7 @@ The geographic distribution of rare deleterious alleles has not been rigorously 
 This work is ultimately interested in understanding how the process of sampling may affect the power of a GWAS to detect deleterious alleles, as this interaction has not been previously studied. This theoretical framework aims to inform the interpretation of GWAS results and quantify the effect of sampling. The project aims to relate the power to detect disease-causing alleles to the evolutionary forces acting upon them and the constructed sampling scheme. It is predicted that certain sampling schemes may increase the power of a GWAS for certain alleles. The model proposed allows one to quantitatively determine the optimal sampling strategies for given deleterious alleles of varying rarity. This model can ultimately be used to inform future GWAS study design by accounting for sampling effects in data collection, possibly increasing the power of a GWAS to detect rare alleles. This could likely improve GWAS predictions of individual disease risk.
 
 
+\begin{center}
+    \textbf{Primary Question:} \\
+    How  does geographic sampling bias affect the detection of rare deleterious alleles?
+\end{center}
