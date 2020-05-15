@@ -146,7 +146,7 @@ We can incorporate additional evolutionary forces simply by adding terms to the 
 
 A population spread over a large area will experience often noticeable differences between members of different local territories. Species tend to form clusters, and different clusters tend to have unique differences. We expect these clusters, or demes (sub-populations), to be more different from one another the farther apart they are along the total range of the population. Migration occurs more easily between nearby demes, allowing for interbreeding and more similar genetic  backgrounds. A number of theoretical models have been proposed to capture this process.\cite{wright_1943} \cite{malecot_1959} This section will examine the classic Stepping Stone model. 
 
-The Stepping Stone model was first presented by Japanese population geneticist Motoo Kimura in 1953. \cite{kimura_1953} In fact, this paper was Kimura's first population genetics publication. \cite{crow_1994} The model considers the distribution of allele frequencies over a lattice of demes connected by migration. We consider one spatial dimension. 
+The Stepping Stone model was first presented by Japanese population geneticist Motoo Kimura in 1953. \cite{kimura_1953} In fact, this paper was Kimura's first population genetics publication. \cite{crow_1994} The model considers the distribution of allele frequencies over an array of demes connected by migration. We consider one spatial dimension. 
 
 \begin{figure}[h]
     \centering
@@ -183,17 +183,47 @@ This equation demonstrates the difference in per-generation allele frequency in 
     \frac{df_r}{dt} = m(f_{r-1} + f_{r+1} -2f_r)
 \end{equation}
 
-
- 
-%%limit as delta t to 0 to show derivative form
+which describes the continuous change over time due to migration. 
 
 
+Note the expected value $E_t[E_r[df_r]]$ averaged over position $r$:
 
+\begin{equation}
+    \begin{split}
+        E_r[df_r] &= m(E_r[f_{r-1}] + E_r[f_{r+1}] -2E[f_r])dt \\
+        &= m(f+f-2f) = 0 \\
+        \implies E_t[E_r[df_r]] &= 0 
+    \end{split}
+\end{equation}
+
+
+On average, migration does not influence the changes in allele frequency. 
+
+
+We can expand the model to two spatial dimensions. This gives an interconnected lattice of demes. Let us only allow for nearest-neighbor migration along cardinal directions, i.e. we allow for individuals in each deme to move along two axes $r$ and $s$:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale = 0.3]{img/2d_ss.png}
+    \caption{The two-dimensional Stepping Stone model with $L^2$ demes. We allow for symmetric migration at rate $m$ between nearest neighbors. Positions on the grid are shown by $r$ along the horizontal axis and $s$ along the vertical axis.}
+    \label{fig:2d_ss}
+\end{figure}
+
+
+We can write $df_{r,s}$ for the two-dimensional model by simply expanding the form of $df_r$ as shown:
+
+
+\begin{equation}
+    df_{r,s} = m(f_{r-1,s} + f_{r+1,s} + f_{r,s+1} + f_{r,s-1} - 4f_{r,s})dt
+\end{equation}
+
+
+Note that $E[df] = 0$ in two dimensions as well. The Stepping Stone model provides a useful framework for understanding the influence of migration on evolution. In the next section, we expand upon this framework to incorporate more complex evolutionary forces acting on alleles distributed over the geographic lattice.  
 
 
 \subsection{Our model} \label{"section:our_model"}
 
-As mentioned previously, our model combines the classic Wright-Fisher and Stepping Stone models. We describe the allele frequency in a finite population of $N$ individuals grouped into discrete \textit{demes} connected by migration (Figure \ref{fig:schematic}). Each deme is occupied by a fixed, constant population size, which regulates the local population density \cite{felsenstein_1975}. We consider a single genetic locus with two alleles. The focal allele frequency in each deme is $f_r$ with $r$ indexing deme location. Allele frequencies change as a result of four evolutionary forces:
+As mentioned previously, our model combines the classic Wright-Fisher and Stepping Stone models. We describe the allele frequency in a finite population of $N$ individuals grouped into discrete \textit{demes} connected by migration (Figure \ref{fig:schematic}). Each deme is occupied by a fixed, constant population size, which regulates the local population density \cite{felsenstein_1975}. We consider a single genetic locus with two alleles. The focal allele frequency in each deme is $f_r$ with $r$ indexing deme location. Allele frequencies change according to four evolutionary forces:
 
 
 \begin{enumerate}
@@ -231,6 +261,7 @@ Our approach involves first simulating the underlying distribution of allele fre
 
 \newpage
 \section{Introducing Sampling Effects}
+
 
 
 
