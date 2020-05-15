@@ -36,27 +36,24 @@ Return to Darwin's theory of evolution by natural selection and "survival of the
 Sewall Wright and genetic drift & Fisher argued that drift played a minor role in evolution, with selection as the main driver
 
 
-Kimura neutral theory and Infinite Sites Model
+Kimura neutral theory
 
 
 Reconciling the "neutralist vs. selectionist debate"
 \\
 Kern Hanhn 2018 "Neutral Theory in Light of Natural Selection" -> selection \textbf{is} the driving force of evolution
 
-\section{Spatial Modeling in Population Genetics}
+\section{Genes and Geography}
 Isolation by distance
 
-
 Novembre et. al.2008
-
-
-The Kimura Stepping Stone model  
 
 
 Novembre and Stephens 2008 human genetic data shows continuous spatial structure 
 
 
-Allison Etheridge on Spatial modeling in popgen 
+A note on
+: Allison Etheridge on Spatial modeling in popgen 
 
 \section{GWAS and Sampling Processes}
 The genomics revolution & GWAS
@@ -75,13 +72,13 @@ McVean 2009, Battey 2019
 \newpage
 \section{Project Rationale and Significance}
 %% Need to reformat citations!
-Quantitative and population geneticists are interested in finding statistical associations between genetic variants and particular traits. Genome-wide association studies (GWAS) are one common method for detecting associations and are especially useful when attempting to predict an individual’s risk for disease. Disease GWAS function by comparing a large set of genotypes to the known disease phenotypes of members in the group. If members with a particular allele, or variant of a gene, are shown to have a significantly higher probability of also being in the group with the disease, then the GWAS supports the hypothesis that the allele increases one’s risk of developing the disease. GWAS typically estimate the genetic effects on a phenotype by conducting a linear regression as follows:\cite{dudbridge_2013}
+Quantitative and population geneticists are interested in finding statistical associations between genetic variants and particular traits. Genome-wide association studies (GWAS) are one common method for detecting associations and are especially useful when attempting to predict an individual’s risk for disease. Disease GWAS function by comparing a large set of genotypes to the known disease phenotypes of members in the group. If members with a particular allele, or variant of a gene, are shown to have a significantly higher probability of also being in the group with the disease, then the GWAS supports the hypothesis that the allele increases one’s risk of developing the disease. GWAS typically estimate the genetic effects on a phenotype by conducting a linear regression as follows:\cite{dudbridge_2013} \cite{xie_xu_1998}
 
 \begin{equation}
     \hat{\bf{Y}} = \boldsymbol{\hat{\beta}} \bf{G} + \boldsymbol{\epsilon} = \sum_{i=1}^{n} (\hat{\beta_i} G_i + \epsilon_i) 
 \end{equation}
 
-Where $\hat{\bf{Y}}$ represents the phenotype expressed as a linear combination of $n$ genetic loci in matrix $\bf{G}$ scaled by their effect sizes $\hat{\beta}$. Error terms are accounted for in $\boldsymbol{\epsilon}$ and are independent from $\bf{G}$. It is important to note that $\hat{\beta}$ is an estimated quantity. Researchers have proposed a number of statistical methods for estimating effect sizes. \cite{Meuwissen_et.al._2001}
+Where $\hat{\bf{Y}}$ represents the phenotype expressed as a linear combination of $n$ genetic loci in matrix $\bf{G}$ scaled by their effect sizes $\hat{\beta}$. Error terms are accounted for in $\boldsymbol{\epsilon}$ and are independent from $\bf{G}$. It is important to note that $\hat{\beta}$ is an estimated quantity. Researchers have proposed a number of statistical methods for estimating effect sizes. \cite{meuwissen_etal._2001} \cite{park_etal._2011}
 
 
 
@@ -93,8 +90,20 @@ Conducting a GWAS requires a large set of genomic data which is gathered by a sa
 \end{enumerate}
 
 
-Preliminary studies have shown that deleterious, disease-causing alleles are often rare, and rare alleles are often geographically localized. When conducting a GWAS, a geographically explicit sampling scheme must be applied. However, there does not exist a theoretical framework for understanding the interaction of strong natural selection and biased spatial sampling. Such a framework would potentially improve the power of a GWAS to detect deleterious alleles
-The geographic distribution of rare deleterious alleles has not been rigorously studied. Previous work in the Novembre lab has visualized the spatial localization of rare alleles in global data sets [?], but deeper considerations have not been given to the effect of biased sampling. This project will formalize the intuition circulating discussion of the sampling of rare deleterious alleles. We will build novel derivations from well-known population genetics models to improve the theoretical framework for studying rare alleles. 
+Preliminary studies have shown that deleterious, disease-causing alleles or those with large effects are often rare \cite{marouli_rare_2017} \cite{slatkin_estimating_2000}, and rare alleles are often geographically localized \cite{visscher_r.._2019}\cite{slatkin_spatial_1978}. Through an evolutionary biology lens, we expect deleterious alleles to be removed from a population by natural selection before they can spread far from their location of origin. The rate at which these alleles are removed depends on how deleterious the allele is. Alleles with large deleterious effects are hypothesized to be removed much faster by selection, and therefore be kept rare in a population. As a result, we expect this allele to exist in a relatively small geographic region. Whereas alleles with small effect sizes are expected to span wider regions and exist at higher frequencies. 
+
+\begin{figure}[h]
+    \centering
+\includegraphics[scale=1.5]{img/spatial_distributions.png}
+    \caption{This schematic illustrates the geographic distribution of alleles with varying effect sizes. Large effect, or strongly deleterious alleles are kept at low frequencies and are more geographically isolated due to natural selection. Small effect alleles are found in wider regions and at higher frequencies.}
+    \label{fig:spatial_schematic}
+\end{figure}
+
+
+As mentioned previously, GWAS cohorts tend to be geographically localized. This is attributed mostly to convenience and limitations in resources. Researchers do not \textit{yet} have the capacity to sequence all members of a population in all locations, and pooling genomic data from multiple studies may create biased results subject to batch effects. \cite{woolston_2015}\cite{gilad_2015} Therefore, the detection of rare deleterious alleles is especially challenging for GWAS. The ability to detect large-effect alleles is dependent upon process by which researchers sample individuals to sequence. Not only is there a lower probability of sampling individuals with the allele of interest, but small-effect alleles can mask the detection of large-effect alleles. Even if some individuals with the allele of interest are sampled, smaller-effect alleles can comprise a larger proportion of the sample, making large-effect allele detection difficult. There exists a trade-off between sampling individuals in a narrow geographic region, and sampling the same number of people from a broader region. For the former, such a GWAS is more likely to find no associations (landing exclusively in the white space of Figure \ref{fig:spatial_schematic}. While for the latter, such a GWAS may find some of the large-effect allele of interest, but is more likely to not have enough representation in the sample to detect the rare allele. 
+
+
+A theoretical framework describing the geographic distribution of rare deleterious alleles could help optimize sampling strategies for GWAS cohorts. However, there does not yet exist a framework that considers the interactions between the evolutionary forces acting upon an allele and the sampling process that influences which alleles are detectable. This project aims to construct such a framework. We will utilize population genetic theory and simulations to examine the geographic distribution of rare deleterious alleles. 
 
 
 This work is ultimately interested in understanding how the process of sampling may affect the power of a GWAS to detect deleterious alleles, as this interaction has not been previously studied. This theoretical framework aims to inform the interpretation of GWAS results and quantify the effect of sampling. The project aims to relate the power to detect disease-causing alleles to the evolutionary forces acting upon them and the constructed sampling scheme. It is predicted that certain sampling schemes may increase the power of a GWAS for certain alleles. The model proposed allows one to quantitatively determine the optimal sampling strategies for given deleterious alleles of varying rarity. This model can ultimately be used to inform future GWAS study design by accounting for sampling effects in data collection, possibly increasing the power of a GWAS to detect rare alleles. This could likely improve GWAS predictions of individual disease risk.

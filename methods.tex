@@ -1,52 +1,251 @@
 \chapter{Methods}
 
-\section{Our Model}
+\section{Theoretical Models}
 
-Our model is based on the classic Wright-Fisher [3][4] and Stepping-Stone [5] population genetic models which describe evolution and migration, respectively. The model describes the allele frequency in a population of N individuals grouped into discrete \textit{demes}, or subpopulations, connected by migration (Figure \ref{fig:schematic}). 
+Our model is based on the classic Wright-Fisher [3][4] and Stepping Stone [5] population genetic models which describe evolution and migration, respectively. In this section, we present the logic of these models using the parameterization best suited for our purposes. Namely, we consider a \textit{haploid} population of size $N$ as opposed to a \textit{diploid} population. However, much of the following derivations are applicable to diploid models. The modified derivations largely follow the logic of the original Wright [3] and Kimura [5] papers, with some more modern insights.\cite{Rackauckas2014AnII}\cite{tran_2012} \cite{durret_2008}
+
+
+\subsection{The neutral Wright-Fisher model}
+
+The neutral Wright-Fisher model [3][4], named after population geneticists Sewall Wright and Ronald Fisher, considers an idealized population with random mating, non-overlapping generation times; and without mutation, migration or natural selection. Despite these assumptions, the model serves as a useful tool for studying evolutionary forces acting upon a population, particularly genetic drift. More complex evolutionary forces can be incorporated seamlessly, as our work will show. 
+
+
+We start by considering a \textit{haploid} population of finite size $N$ and a single genetic locus with two alleles, $A$ and $a$. The total population size remains constant. Let $X_t$ be the number of $A$ alleles at generation $t$.Therefore, the frequency of $A$, $f_t$, is simply:
+
+\begin{equation}
+    f_t = \frac{X_t}{N}
+\end{equation}
+
+This implies that the frequency of $a$ is simply $1-f_t$. So we only need to keep track of changes to $f_t$. We call $A$ the "focal allele". Alleles are passed on to the next generation $t+1$ independently of one another, via sampling with replacement. We want to know the probability of having $k$ copies of allele $A$ in the next generation, where $k \in \{0,1,...,N\}$. To learn this, we need to know how $X_{t+1}$ is distributed. Because the choice between the two alleles is independent of one another, and because we are sampling with replacement:
+
+\begin{equation}
+    X_{t+1} \sim Binomial(N,f_t)
+\end{equation}
+
+ The probability mass function of the binomial distribution gives the following result:
+
+\begin{equation}
+    P(X_{t+1} = k) = {N \choose k}(f_t)^k (1-f_t)^{N-k}
+\end{equation}
+
+This describes the probability of transitioning from $X_t$ number of alleles to $X_{t+1} = k$ number of alleles in one generation, or from $f_t$ to $f_{t+1}$. This \textit{Markov} process begins with a given initial frequency $f_0$ and repeats for each generation. 
+
+
+We will continue by describing some properties of this model. The expected value of $E[X_{t+1}]$ is shown using the Law of Total Expectation.
+
+\begin{equation}
+    \begin{split}
+            E[X_{t+1}] &= E[E[X_{t+1}|X_{t}]] = E[N f_t] = E[X_t] \\
+    \implies E[f_{t+1}] &= E[f_t] = f_0
+    \end{split}
+\end{equation}
+
+
+The average allele frequency is determined by the set initial allele frequency. We can think of this process as a random walk starting at $f_0$ with equal probability of stepping towards 1 or 0 with an overall average of $f_0$. What is the variance of this random walk? Because the expected value of $f$ at the next generation is equal to the value at the current generation, $f$ is known as a \textit{martingale} by definition. The variance of a martingale is thus:
+ 
+\begin{equation}
+    \begin{split}
+            Var[X_{t+1}] &= N f_t(1-f_t) \\
+            \implies Var[f_{t+1}] &= Var[\frac{X_{t+1}}{N}] =  \frac{1}{N^2} N f_t(1-f_t) = \frac{f_t (1-f_t)}{N} 
+    \end{split}
+\end{equation}
+
+We also get this definition from the variance of a binomial random variable. 
+
+
+Notice that the variance in the focal allele frequency between generations is dependent on the population size. This reflects an empirically observed property of genetic drift. Small populations experience larger variation in allele frequencies per generation than large populations. The following holds:
+
+\begin{equation}
+    \lim_{N \to \infty} Var[f_{t+1}] = 0
+\end{equation}
+
+We want to capture these dynamics in a single equation. One reason for this is that single equations are simpler to write and thus are simpler to simulate and analyze. However, the inclusion of randomness in our model prohibits the use of ordinary differential equations (ODEs) like those commonly written to describe change in more deterministic systems in biology. We will use stochastic calculus to arrive at such an equation.
+
+
+If we assume $N$ to be large, we can consider changes in allele frequencies due to genetic drift to be almost continuous and differentiable. Therefore, we can write an equation of the form: 
+
+\begin{equation}
+    df_t = \mu_t \, \,dt + \sigma_t \, \,dB_t
+\end{equation}
+
+
+This equation is a \textit{stochastic differential equation} (SDE) that represents the change in allele frequencies over time. We see a term $\mu_t \, \, dt$ that resembles the form of an ODE, but unlike an ODE we have an added $dB_t$ term scaled by $\sigma_t$. SDEs generalize ordinary differential equations by adding a random Brownian noise term $dB_{t}$. In an infinitesimal time interval $dt$, the noise has mean $0$ and variance $dt$. Solutions to SDEs are probability densities rather than functions of time or space, as with an ODE. There exists a well-developed body of theory for solving SDEs in stochastic calculus. One of the theoretical contributions most relevant to this project is \textit{It\^{o}'s lemma}, named after Japanese Mathematician Kiyosi It\^{o}. \cite{ito_1944} We will use the lemma to demonstrate exactly what $\mu_t$ and $\sigma_t$ represent. Then we will find the correct $\mu_t$ and $\sigma_t$ for the Wright-Fisher model. 
+
+
+For some function $g(f_t)$ It\^{o}'s lemma gives:
+
+\begin{equation}
+    \begin{split}
+        dg(f_t) 
+                &= \frac{dg}{df_t}df_t + \frac{1}{2} \frac{d^2g}{df_t^2}(df_t)^2 + ... \\
+                &= (\frac{\partial g}{\partial t} + \mu_t \frac{\partial g}{\partial f_t} + \frac{\sigma_t^2}{2} \frac{\partial^2 g}{\partial f_t^2})dt + \sigma_t \frac{\partial g}{\partial f_t}dB_t \\
+                &= (\mu_t \frac{\partial g}{\partial f_t} + \frac{\sigma_t^2}{2} \frac{\partial^2 g}{\partial f_t^2})dt + \sigma_t \frac{\partial g}{\partial f_t}dB_t \\
+    \end{split}
+\end{equation}
+
+
+This is essentially an extension of the chain rule for SDEs. The $\frac{\partial g}{\partial t} \to 0$ as $g$ is not a function of $t$. This formulation allows us to examine the expected values $E[g(f_t)]$ for given functions $g$. Note the following and recall that $E[dB_t] = 0$:
+
+\begin{equation}
+    E[dg(f_t)] = (\mu_t \frac{\partial g}{\partial f_t} + \frac{\sigma_t^2}{2} \frac{\partial^2 g}{\partial f_t^2})dt
+\end{equation}
+
+
+Let $g(f_t) = f_t$. This implies $\frac{\partial g}{\partial f} = 1$ and $\frac{\partial^2 g}{\partial f^2} = 0$.
+
+
+\begin{equation}
+    \begin{split}
+         E[dg(f_t)] &= E[df_t] = (\mu_t \times 1 + \frac{\sigma_t^2}{2} \times 0)dt \\
+         & \therefore \mu_t = \frac{E[df_t]}{dt} = \frac{d}{dt}E[f_t]
+    \end{split}
+\end{equation}
+
+
+Leibniz's rule allows us to pull the $\frac{d}{dt}$ out of the expectation. 
+
+
+We now have our $\mu_t$ for the model. $\mu_t$ is defined as the \textit{infinitesimal mean}, or how much the average allele frequency changes at each instant. Recall that we set a constant initial frequency value $f_0$. For the Wright-Fisher model, we have $E[f_t] = f_0$. This implies that $\mu_t = \frac{d}{dt} (f_0) = 0$. Let us now solve for $\sigma_t$.
+
+
+Similarly, we define $g(f_t) = (f_t - f_0)^2$. This implies that $\frac {\partial g}{\partial f} = 2(f_t - f_0)$ and $\frac{\partial^2 g}{\partial f^2} = 2$.
+
+
+\begin{equation}
+    \begin{split}
+         E[dg(f_t)] &= E[d(f_t-f_0)^2] = (\mu_t \times 2(f_t - f_0) + \frac{\sigma_t^2}{2} \times 2)dt \\
+         \implies \sigma_t &= \sqrt{\frac{E[d(f_t-f_0)^2]}{dt}} = \sqrt{\frac{d}{dt}E[(f_t-f_0)^2]} \\
+         &= \sqrt{\frac{d}{dt}E[(f_t-E[f_t])^2]} = \sqrt{\frac{d}{dt}Var(f_t)}
+    \end{split}
+\end{equation}
+
+
+We see that $\sigma_t$ is the \textit{infinitesimal standard deviation}, or the square root of the infinitesimal variance. This represents how far we expect the allele frequency to deviate from the mean at each instant. The SDE is a continuous-time approximation of the discrete-time Markov process we wrote initially. Therefore, we take the limit as $\Delta t \to 0$. The recursive solution of $Var[f_t]$ previously shown becomes:
+
+%% skip Kolmogorov Forward equation
+
+\begin{equation}
+    \begin{split}
+         Var[f_t] &= \frac{f_{t-1}(1-f_{t-1})}{N} \\
+         \implies \frac{d}{dt} Var[f_t] &= \frac{f_t(1-f_t)}{N} \\
+         \therefore \sigma_t &= \sqrt{\frac{f_t(1-f_t)}{N}}
+    \end{split}
+\end{equation}
+
+Finally, we arrive at an SDE for the neutral Wright-Fisher model. This SDE has mean and standard deviation equal to the solved $\mu_t$ and $\sigma_t$. We drop the subscript $t$ for clarity, noting that this SDE describes continuous change over time. 
+
+\begin{equation}
+    df = \sqrt{\frac{f(1-f)}{N}} dB_t
+\end{equation}
+
+
+We can incorporate additional evolutionary forces simply by adding terms to the Wright-Fisher SDE above as one would for an ODE. Section \ref{"section:our_model"} shows the expanded Wright-Fisher SDE that we use to simulate more complex evolution. 
+
+
+\subsection{The Stepping Stone model}
+
+A population spread over a large area will experience often noticeable differences between members of different local territories. Species tend to form clusters, and different clusters tend to have unique differences. We expect these clusters, or demes (sub-populations), to be more different from one another the farther apart they are along the total range of the population. Migration occurs more easily between nearby demes, allowing for interbreeding and more similar genetic  backgrounds. A number of theoretical models have been proposed to capture this process.\cite{wright_1943} \cite{malecot_1959} This section will examine the classic Stepping Stone model. 
+
+The Stepping Stone model was first presented by Japanese population geneticist Motoo Kimura in 1953. \cite{kimura_1953} In fact, this paper was Kimura's first population genetics publication. \cite{crow_1994} The model considers the distribution of allele frequencies over a lattice of demes connected by migration. We consider one spatial dimension. 
 
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.8]{img/model_schematic.JPG}
-    \caption{This schematic represents the geographic structure for the model in one dimension. Circles represent demes which are indexed by integer $r$. There are $L$ many demes connected to nearest neighbors via a symmetric migration rate $m$. The boundaries are connected to one another, effectively creating a \textit{ring} of demes.}
+    \caption{This schematic represents the geographic structure for the model in one dimension. Circles represent demes which are indexed by integer $r$. There are $L$ many demes connected to nearest neighbors via a migration rate $m$. The boundaries are connected to one another, effectively creating a \textit{ring} of demes.}
     \label{fig:schematic}
 \end{figure}
-	
 
-The model simplifies the system by considering a single genetic locus with two alleles. The allele frequency in each deme, $f_r$, evolves due to four forces:
+
+Allele frequencies change in each deme over time. We assume that change occurs in discrete generation time. For a single locus with two alleles $a$ and $A$, let $f_r$ be the current allele frequency of $A$ at deme $r$. The allele frequency in this deme at the next generation $f_r'$ is the following:
+
+\begin{equation}
+    f_r' = (1-2m-m_\infty)f_r + m(f_{r-1} + f_{r+1}) + m_\infty \bar{f} + \xi_r
+\end{equation}
+
+
+Where $m$ is the symmetric migration rate connecting neighboring demes. $2m$ represents the rate at which individuals in deme $r$ move to the two neighboring demes. $m_\infty$ represents "long range dispersal". Kimura and Weiss (1964) \cite{kimura_1964} describes this as the rate by which individuals enter new demes as a random sample of the entire population where the probability of sampling $A$ is $\bar{f}$, the frequency of $A$ averaged over each deme. $m_\infty$ is mathematically equivalent to mutation. $\xi_r$ describes random changes in frequency due to genetic drift. As seen in the Wright-Fisher model, $\xi_r$ is a binomial random variable with mean $E[\xi_r]=0$ and $Var[\xi_r] = \frac{f_r(1-f_r)}{N}$ (or $2N$ for a diploid population).
+
+
+For now, we focus only on migration between nearest neighbors so we ignore $m_\infty$. We also assume $N$ is large in each deme, so that $\xi_r \to 0$. Therefore, we can rearrange terms to arrive at the linear difference equation:
+
+\begin{equation}
+    \begin{split}
+        f_r' &= (1-2m)f_r + m(f_{r-1} + f_{r+1}) \\ 
+        f_r' &= f_r -2mf_r + m(f_{r-1} + f_{r+1}) \\
+        f_r' - f_r &= m(f_{r-1} + f_{r+1} - 2f_r)
+    \end{split}
+\end{equation}
+
+
+This equation demonstrates the difference in per-generation allele frequency in each deme. As $\Delta t \to 0$, we can show the continuous form:
+
+\begin{equation}
+    \frac{df_r}{dt} = m(f_{r-1} + f_{r+1} -2f_r)
+\end{equation}
+
+
+ 
+%%limit as delta t to 0 to show derivative form
+
+
+
+
+
+\subsection{Our model} \label{"section:our_model"}
+
+As mentioned previously, our model combines the classic Wright-Fisher and Stepping Stone models. We describe the allele frequency in a finite population of $N$ individuals grouped into discrete \textit{demes} connected by migration (Figure \ref{fig:schematic}). Each deme is occupied by a fixed, constant population size, which regulates the local population density \cite{felsenstein_1975}. We consider a single genetic locus with two alleles. The focal allele frequency in each deme is $f_r$ with $r$ indexing deme location. Allele frequencies change as a result of four evolutionary forces:
 
 
 \begin{enumerate}
     \item \textbf{Mutation} changes one allele to another at rate $\mu$
     \item \textbf{Natural selection} reduces the frequency of the deleterious allele at rate $s$
-    \item \textbf{Genetic drift} introduces random noise in a finite population at rate $\frac{1}{N}$, \\ where $N$ is the population size
     \item \textbf{Migration} reduces the allele frequency differences between nearby demes at rate $m$
+    \item \textbf{Genetic drift} introduces random noise in a finite population at rate $\frac{1}{N}$, \\ where $N$ is the population size
 \end{enumerate}
 
-\newpage
-The change in allele frequency at each deme due to these forces is described by the stochastic differential equation:
+
+The change in allele frequency in each deme $df_r$ is described by the following stochastic differential equation:
+
 \begin{equation}
     \label{eq:model}
     df_r=[\mu(1-2f_r)-sf_r (1-f_r ) + m (f_{r-1}+f_{r+1}-2f_r)]dt+\sqrt{\frac{f_r (1-f_r )}{N}} dB_{t,r}
 \end{equation}
 
 
-While these models have been studied extensively [14][15][16], most work has been focused on neutral evolution. Expanding the Wright-Fisher model allows us to examine allele frequencies acted upon by each of the four evolutionary forces. We simulate the evolution of rare deleterious alleles over many generations and over large geographic environments. Using this equation, important information about the evolution of rare deleterious alleles can be discovered. In the next chapter, we will derive important quantities that describe the average number of rare allele copies as a function of the evolutionary parameters along with the quantity describing the average geographic range of an allele. We will describe the equilibrium distribution of allele frequencies across demes.
+Note that we consider a symmetric migration rate. The rate at which individuals leave their current deme is the same as the rate at which individuals enter that deme. We also consider a symmetric mutation rate. The rate at which allele $a$ changes into $A$ is the same as the reverse mutation. Loci are modeled as independent replicates.
+
+While these models have been studied extensively [14][15][16], most work has been focused on neutral evolution. A caveat to this is the study of "clines", or measurable gradients of biological characteristics across geographic ranges. Some population geneticists and evolutionary biologists have studied changes in clines in situations of non-neutral evolution. \cite{baines_2004} Still, many of these studies still focus on examining the influence of genetic drift on cline patterns. \cite{polechova_barton_2011} The main difference between the theory of clines and the non-neutral evolutionary theory we propose, is that cline theory is concerned with the \textit{mean} allele frequency, while we are concerned with the \textit{distribution} of allele frequencies.\cite{vasemagi_2006} This distribution is more relevant for rare alleles and large samples. 
+
+
+Expanding the Wright-Fisher model allows us to examine allele frequencies acted upon by each of the four evolutionary forces. We simulate the evolution of rare deleterious alleles over many generations and over large geographic environments. Using this equation, important information about the evolution of rare deleterious alleles can be discovered. In the next chapter, we will derive important quantities that describe the average number of rare allele copies as a function of the evolutionary parameters along with the quantity describing the average geographic range of an allele. We will also describe the expected distribution of allele frequencies across demes, known as the \textit{Site Frequency Spectrum}.
 
 
 Our approach involves first simulating the underlying distribution of allele frequencies, and second, sampling from this distribution using a variety of sampling scheme. Our subsequent analysis examines the information loss as a function of sampling. We are interested in the interaction between the process of sampling and the "unobserved" underlying frequency distribution. 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.5]{img/smapling_schematic.JPG}
-    \caption{This schematic illustrates the interaction between the underlying allele frequency distribution and the sampling scheme imposed by an association study. We see that alleles are typically confined to a range of geographic positions, and we expect the alleles sampled in a study to depend on where the sampling distribution is relative to the allele frequency distribution.}
+    \includegraphics[scale=0.4]{img/smapling_schematic.JPG}
+    \caption{This schematic illustrates the interaction between the underlying allele frequency distribution and the sampling scheme imposed by an association study. We see that alleles are typically confined to a range of geographic positions, with rare alleles having a smaller range. We expect the distribution of alleles observed in a GWAS to depend on the location of the sampling distribution relative to the allele frequency distribution.}
     \label{fig:sampling_schematic}
 \end{figure}
 
 \newpage
+\section{Introducing Sampling Effects}
+
+
+
+
+\newpage
 \section{Simulating Spatial Evolution}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics{img/time_series.jpg}
+    \caption{Caption}
+    \label{fig:time_series}
+\end{figure}
 
 
 
-\section{Introducing Sampling Effects}
+
 
