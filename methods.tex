@@ -5,7 +5,7 @@
 Our model is based on the classic Wright-Fisher [3][4] and Stepping Stone [5] population genetic models which describe evolution and migration, respectively. In this section, we present the logic of these models using the parameterization best suited for our purposes. Namely, we consider a \textit{haploid} population of size $N$ as opposed to a \textit{diploid} population. However, much of the following derivations are applicable to diploid models. The modified derivations largely follow the logic of the original Wright [3] and Kimura [5] papers, with some more modern insights.\cite{Rackauckas2014AnII}\cite{tran_2012} \cite{durret_2008}
 
 
-\subsection{The neutral Wright-Fisher model}
+\subsection{The neutral Wright-Fisher model} \label{section:neutral_wf}
 
 The neutral Wright-Fisher model [3][4], named after population geneticists Sewall Wright and Ronald Fisher, considers an idealized population with random mating, non-overlapping generation times; and without mutation, migration or natural selection. Despite these assumptions, the model serves as a useful tool for studying evolutionary forces acting upon a population, particularly genetic drift. More complex evolutionary forces can be incorporated seamlessly, as our work will show. 
 
@@ -33,7 +33,7 @@ This describes the probability of transitioning from $X_t$ number of alleles to 
 
 We will continue by describing some properties of this model. The expected value of $E[X_{t+1}]$ is shown using the Law of Total Expectation.
 
-\begin{equation}
+\begin{equation} \label{eq:ex_drift}
     \begin{split}
             E[X_{t+1}] &= E[E[X_{t+1}|X_{t}]] = E[N f_t] = E[X_t] \\
     \implies E[f_{t+1}] &= E[f_t] = f_0
@@ -55,7 +55,7 @@ We also get this definition from the variance of a binomial random variable.
 
 Notice that the variance in the focal allele frequency between generations is dependent on the population size. This reflects an empirically observed property of genetic drift. Small populations experience larger variation in allele frequencies per generation than large populations. The following holds:
 
-\begin{equation}
+\begin{equation}\label{eq:var_lim_drift}
     \lim_{N \to \infty} Var[f_{t+1}] = 0
 \end{equation}
 
@@ -213,7 +213,7 @@ We can expand the model to two spatial dimensions. This gives an interconnected 
 We can write $df_{r,s}$ for the two-dimensional model by simply expanding the form of $df_r$ as shown:
 
 
-\begin{equation}
+\begin{equation} \label{eq:stepstone}
     df_{r,s} = m(f_{r-1,s} + f_{r+1,s} + f_{r,s+1} + f_{r,s-1} - 4f_{r,s})dt
 \end{equation}
 
@@ -290,7 +290,7 @@ Our simulations use this equation to generate changes in allele frequencies over
 
 \lstinputlisting[language=iPython, caption = Population parameters, label = code:params]{src/param_list.py} 
 
-Our simulation output contains a vector of allele frequency values for every generation. We perform many independent replicates of each trajectory to represent multiple loci and compute statistics from our data. The figure below shows an example stochastic trajectory of allele frequencies over time. With purifying natural selection (large &s&), the allele remains rare as $s$ determines the rate at which the allele is removed from the population. We observe this to be the case in the example shown.
+Our simulation output contains a vector of allele frequency values for every generation. We perform many independent replicates of each trajectory to represent multiple loci and compute statistics from our data. The figure below shows an example stochastic trajectory of allele frequencies over time. With purifying natural selection (large $s$), the allele remains rare as $s$ determines the rate at which the allele is removed from the population. We observe this to be the case in the example shown.
 
 
 \begin{figure}[h]
@@ -316,7 +316,47 @@ Clearly, \code{SLiM} code becomes unnecessarily complex for a model that ought t
 
 \subsubsection{NumPy}
 
-As mentioned, \code{NumPy} allows us to efficiently run simulations of our model. 
+As mentioned, \code{NumPy} allows us to efficiently run simulations of our model. We can define a \code{SS\_WF\_sim()} function to accept our population parameters and calculate $df$ given by equation (\ref{eq:model}). We perform this calculation for every generation, storing a matrix $\bf{f}$ containing allele frequencies over time at each deme. Stochasticity is incorporated into our population using \code{NumPy} random number generators. We store these matrices as \code{.npy} \textit{byte} files which save on storage space and allow other \code{NumPy} programs to quickly load in our data. The script used to perform our simulations is shown below:
+
+\lstinputlisting[language=iPython, caption = Python script used to simulate Wright-Fisher + Stepping Stone model]{src/python_ss_wf.py}
+
+This script is much more concise than our \code{SLiM} script and offers computation speed that is orders of magnitude faster. We use \code{np.random.binomial()} to generate binomial random samples given probability $p = f_{t-1} + df$. This simulates genetic drift through the manner described in section  \ref{section:neutral_wf}. What may be less clear is our use of \code{laplace()} from the \code{SciPy} package \cite{scipy} to incorporate migration. In mathematical terms, the \code{laplace()} function computes the \textit{Laplacian} of our frequency matrix $\textbf{f}$ and performs a \text{convolution} of our matrix with its Laplacian. The Laplacian of a function $\psi$ (written $\nabla^2 \psi$) is defined as the following:
+
+\begin{equation}
+    \nabla^2 \psi(x,y) =  \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial y^2}
+\end{equation}
+
+Essentially, the Laplacian is a sum of all of the unmixed second partial derivatives of $\psi$. What does this have to do with migration? It turns out that there is another way to write the form of the Laplacian:
+
+\begin{equation}
+    \nabla^2 \psi(x,y) =  \frac{1}{h^2}(\psi_{x+h,y} + \psi_{x-h,y} + \psi_{x,y+h} + \psi_{x,y-h} - 4\psi_{x,y})
+\end{equation}
+
+When we set $h = 1$, $\psi(x,y) = \frac{df}{dt}(r,s)$ and multiply by migration rate $m$, we arrive at our equation for migration dynamics in the two-dimensional Stepping Stone model:
+
+\begin{equation} 
+    \tag{\ref{eq:stepstone} revisited}
+    m[\nabla^2 df_{r,s}] = m(f_{r-1,s} + f_{r+1,s} + f_{r,s+1} + f_{r,s-1} - 4f_{r,s})dt
+\end{equation}
+
+
+The \code{laplace()} generalizes our simulation to as many spatial dimensions as specified in the \code{dims} parameter. We use the exact same script to simulate Stepping Stone migration in both one and two dimensional models. When we call the \code{laplace()} function on our matrix $\text{bf}$, the calculation in equation \ref{eq:stepstone} is performed across all pairs of $(r,s)$ neighbor demes and $df$ is computed accordingly. All this is done in a computationally efficient, generalized fashion.
+
+
+We perform many replicate simulations over various combinations of population parameters. Because our simulations are stochastic, we need many replicates to compute useful statistics and relate our theoretical predictions to our generated data. Our goal is essentially to explore how changing the aforementioned population parameters influences what we see in our simulations. To demonstrate how altering some parameters changes the dynamics of our model, we present a collection of simulated allele frequency trajectories in a one-deme, neutral Wright-Fisher model ($\mu = s = m = 0$). We vary the population size $N$ and the initial allele frequency $f_0$ and observe changes due to genetic drift. Recall the following properties:
+
+\begin{equation}
+    \tag{\ref{eq:ex_drift} revisited}
+    E[f_t] = f_0
+\end{equation}
+
+\begin{equation}
+    \tag{\ref{eq:var_lim_drift} revisited}
+    \lim_{N \to \infty} Var[f_{t+1}] = 0
+\end{equation}
+
+
+Figure (\ref{fig:neutral_wf}) neatly demonstrates these properties while also illustrating the time dynamics of the neutral Wright-Fisher model. 
 
 
 \begin{figure}[h]
@@ -327,18 +367,13 @@ As mentioned, \code{NumPy} allows us to efficiently run simulations of our model
 \end{figure}
 
 
-\lstinputlisting[language=iPython, caption = Python script used to simulate Wright-Fisher + Stepping Stone model]{src/python_ss_wf.py}
 
 
+\newpage
 \subsection{Simulated sampling}
+This section explores our method for simulating the sampling process inherent in GWAS. Recall that we are interested in the interaction between the underlying distribution of allele frequencies and the distribution of frequencies observed in a population sample (Figure: \ref{fig:sampling_schematic}). We expect the ability to detect alleles in a GWAS sample to depend on the population parameters (particularly the rates of selection and migration) and on the 
 
 
 
 
-
-
-
-
-
-
-
+%% End with mentioning Snakemake
