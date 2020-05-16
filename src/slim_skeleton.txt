@@ -1,0 +1,17 @@
+initialize(){ // Occurs before simulation starts
+ initializeMutationRate(mu);
+ initializeMutationType("m1", 1.0, "f", s);
+ initializeGenomicElementType("g1", m1, 1.0);
+ initializeGenomicElement(g1, 0, 0);
+ initializeRecombinationRate(0);
+}
+1 { // Occurs at first generation of simulation
+// Define spatial model
+ sim.addSubpop(1, popsize);
+ subpops = sim.subpopulations;
+ p1.setMigrationRates(p1, m);
+ p1.setCloningRate(1.0);
+}
+20000 late()  { // Runs simulation for 20000 generations
+ sim.outputFull(); // reports output
+}

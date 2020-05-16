@@ -3,6 +3,9 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%% Helper commands %%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%% Custom code snippet
+\newcommand{\code}[1]{\colorbox{codegray}{\texttt{#1}}}
+
 % These commands deal with options that set variables
 \newcommand{\etdDeclVarArg}[2]{\newcommand{#1}{#2}}
 \newcommand{\etdVarArg}[3]{\DeclareOption{#2}{\renewcommand{#1}{#3}}}
@@ -115,6 +118,9 @@
 %%
 %% Declare arguments/options
 %%
+
+
+
 
 % TOC Options
 \let\iftocflag=\iffalse

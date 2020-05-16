@@ -260,21 +260,83 @@ Our approach involves first simulating the underlying distribution of allele fre
 \end{figure}
 
 \newpage
-\section{Introducing Sampling Effects}
+\section{Simulations}
+
+This section describes the various tools used to simulate our model. In theory-based research, simulations are important for several reasons. First, they allow us to observe a system that is typically too complex to study empirically. The evolutionary history of life spans billions of years. Simulations allow us to study evolution over thousands of generations in a matter of seconds. Second, simulations allow us to validate theoretical predictions made by our model. We can derive properties of our system analytically, and show that these properties hold computationally. Much of our project results come from first making predictions based on our model, and then confirming these predictions with simulations. Hundreds of simulations have been run throughout the course of this project, producing hundreds of gigabytes of data. The University of Chicago Research Computing Cluster has made this process possible.
 
 
+Our simulations were designed using two distinct frameworks: 
+
+\begin{enumerate}
+    \item \code{SLiM} ("\textbf{S}election on \textbf{Li}nked \textbf{M}utations")
+    \item \code{NumPy} arrays and custom-written functions in \code{Python}
+\end{enumerate}
+
+\code{SLiM} is a simulation package for population genetics designed by Phillip Messer and Benjamin Haller at Cornell University in 2013.\cite{slim} The package contains a broad range of functionality for simulating the evolution of complex systems. Researchers have used \code{SLiM} to investigate the dynamics of population bottlenecks \cite{pederson_2017}, ancient human migration \cite{sikora_2017}, regional heritability mapping \cite{caballero_2015}, and much more. The versatility of \code{SLiM} allows for whole-genome simulations, continuous spatial models, age structure. For our purposes, this added functionality proved unnecessary and we chose to write our own simulation programs in \code{Python}.  
+
+\code{NumPy} ("\textbf{Num}erical \textbf{Py}thon extensions") is the staple \code{Python} package for working with large sets of numerical data. The package demonstrates superior computational efficiency, both in terms of processing speed and memory usage. \code{NumPy} is at the core of much scientific computing.\cite{numpy} We use the package to efficiently create, manipulate, and store arrays of simulation data. The following sections demonstrate our process. 
 
 
+\subsection{Evolution in discrete space}
 
-\newpage
-\section{Simulating Spatial Evolution}
+Recall that our SDE model describes the change in allele frequencies over time in discrete demes connected by migration:
+
+\begin{equation}
+    \tag{\ref{eq:model} revisited}
+    df_r=[\mu(1-2f_r)-sf_r (1-f_r ) + m (f_{r-1}+f_{r+1}-2f_r)]dt+\sqrt{\frac{f_r (1-f_r )}{N}} dB_{t,r}
+\end{equation}
+
+Our simulations use this equation to generate changes in allele frequencies over time, given an initial allele frequency $f_0 = \frac{1}{N}$ and a set of population parameters. We begin with a one deme population ($L = 1$) and the following parameters:
+
+\lstinputlisting[language=iPython, caption = Population parameters, label = code:params]{src/param_list.py} 
+
+Our simulation output contains a vector of allele frequency values for every generation. We perform many independent replicates of each trajectory to represent multiple loci and compute statistics from our data. The figure below shows an example stochastic trajectory of allele frequencies over time. With purifying natural selection (large &s&), the allele remains rare as $s$ determines the rate at which the allele is removed from the population. We observe this to be the case in the example shown.
+
 
 \begin{figure}[h]
     \centering
-    \includegraphics{img/time_series.jpg}
-    \caption{Caption}
+    \includegraphics[scale=0.5]{img/time_series.jpg}
+    \caption{An example simulation output plot of allele frequencies changing over time.}
     \label{fig:time_series}
 \end{figure}
+
+\subsubsection{SLiM}
+
+Here we describe our use of \code{SLiM} to generate simulations of our model. \code{SLiM} operates with its own scripting language called \code{Eidos} (named after the Platonic forms). This language provides an interface to \code{SLiM} functionality that is flexible, albeit sometimes challenging to work with. The main difficulty with \code{SLiM} is that it requires each evolutionary process to essentially be defined separately from one another. As opposed to writing a single line of code to capture all evolutionary forced of interest, \code{SLiM} requires individual function calls for specifying rates of mutation, migration, selection, etc. Additionally, blocks of code are performed according to the generation time specified. The general schematic is shown:
+
+
+\lstinputlisting[language=Eidos, caption = SLiM simulation script skeleton]{src/slim_skeleton.txt}
+
+An \code{initialize()\{\}} block defines properties of the genomes to simulate (diploid genomes by default). This is executed before the simulation begins to run. Spatial population parameters can be specified at the first generation of the simulation, in the \code{1\{\}} block. Finally, the \code{20000 late()\{\}} block specifies how long to run the simulation for, and what to do at the end of the simulation. We show the script used to simulate the Stepping Stone migration model with expanded Wright-Fisher dynamics (migration, mutation, selection, and genetic drift included). The script reads population parameters from \code{Python} file defined similarly to listing \ref{code:params}. 
+
+\lstinputlisting[language=Eidos, caption = SLiM script used to simulate Wright-Fisher + Stepping Stone model]{src/slim_2d_ss.txt}
+
+
+Clearly, \code{SLiM} code becomes unnecessarily complex for a model that ought to be written in a single line of code. We used \code{SLiM} for our early experimentation, but quickly moved towards writing our own programs once we realized that we don't need much of the added \code{SLiM} functionality. The next section explores our custom-built simulations. The remaining data presented in this paper will use results collected from these \code{Python} simulations.
+
+\subsubsection{NumPy}
+
+As mentioned, \code{NumPy} allows us to efficiently run simulations of our model. 
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.8]{img/neutral_wf.jpg}
+    \caption{This figure shows several simulated trajectories for varying initial allele frequency $f_0$ and population size $N$ in a one deme, neutral Wright-Fisher model. Each row shows simulations run with a common $N$ and each column shows a common $f_0$. Figure formatting is inspired by Novembre lab member Joe Marcus' \textit{Introduction to the Wright-Fisher model}.\cite{marcus_2016}}
+    \label{fig:neutral_wf}
+\end{figure}
+
+
+\lstinputlisting[language=iPython, caption = Python script used to simulate Wright-Fisher + Stepping Stone model]{src/python_ss_wf.py}
+
+
+\subsection{Simulated sampling}
+
+
+
+
+
+
 
 
 
