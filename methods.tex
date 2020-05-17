@@ -188,7 +188,7 @@ which describes the continuous change over time due to migration.
 
 Note the expected value $E_t[E_r[df_r]]$ averaged over position $r$:
 
-\begin{equation}
+\begin{equation} \label{eq:exp_ss}
     \begin{split}
         E_r[df_r] &= m(E_r[f_{r-1}] + E_r[f_{r+1}] -2E[f_r])dt \\
         &= m(f+f-2f) = 0 \\
@@ -356,7 +356,7 @@ We perform many replicate simulations over various combinations of population pa
 \end{equation}
 
 
-Figure (\ref{fig:neutral_wf}) neatly demonstrates these properties while also illustrating the time dynamics of the neutral Wright-Fisher model. 
+Figure (\ref{fig:neutral_wf}) neatly demonstrates these properties while also illustrating the time dynamics of the neutral Wright-Fisher model. We validate our analytical predictions of $E[f] = f_0$ for the neutral Wright-Fisher model. Figure \ref{fig:mean_wf} shows that the average frequency computed from simulated data matches the set initial frequency. As $N \to \infty$, the deviation from this prediction becomes $0$, but at small population sizes, changes due to drift introduce errors in our predictions. 
 
 
 \begin{figure}[h]
@@ -367,6 +367,12 @@ Figure (\ref{fig:neutral_wf}) neatly demonstrates these properties while also il
 \end{figure}
 
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{img/mean_f.jpg}
+    \caption{This figure confirms the neutral Wright-Fisher model average frequency. As predicted, $E[f] = f_0$. Simulations run at varying population sizes validate this prediction. The dashed, red line has y-intercept $0$ and slope $1$.}
+    \label{fig:mean_wf}
+\end{figure}
 
 
 \newpage

@@ -34,9 +34,7 @@ for (line in lines){
  p_j = subpops[subpops.id == j];
  p_j.setMigrationRates(p_i, m);
  p_i.setCloningRate(1.0);
- p_j.setCloningRate(1.0);
- }
- }
+ p_j.setCloningRate(1.0);}}
 }
 late() {
  // remove any new mutations added to the disabled diploid genomes
@@ -44,8 +42,7 @@ late() {
  // remove mutations in the haploid genomes that have fixed
  muts = sim.mutationsOfType(m1);
  freqs = sim.mutationFrequencies(NULL, muts);
- sim.subpopulations.genomes.removeMutations(muts[freqs == 0.5], T);
-}
+ sim.subpopulations.genomes.removeMutations(muts[freqs == 0.5], T);}
 20000 late()  {
 sim.outputFull();
 }
