@@ -262,7 +262,7 @@ Our approach involves first simulating the underlying distribution of allele fre
 \newpage
 \section{Simulations}
 
-This section describes the various tools used to simulate our model. In theory-based research, simulations are important for several reasons. First, they allow us to observe a system that is typically too complex to study empirically. The evolutionary history of life spans billions of years. Simulations allow us to study evolution over thousands of generations in a matter of seconds. Second, simulations allow us to validate theoretical predictions made by our model. We can derive properties of our system analytically, and show that these properties hold computationally. Much of our project results come from first making predictions based on our model, and then confirming these predictions with simulations. Hundreds of simulations have been run throughout the course of this project, producing hundreds of gigabytes of data. The University of Chicago Research Computing Cluster has made this process possible.
+This section describes the various tools used to simulate our model. In theory-based research, simulations are important for several reasons. First, they allow us to observe a system that is typically too complex to study empirically. The evolutionary history of life spans billions of years. Simulations allow us to study evolution over thousands of generations in a matter of seconds. Second, simulations allow us to validate theoretical predictions made by our model. We can derive properties of our system analytically, and show that these properties hold computationally. Much of our project results come from first making predictions based on our model, and then confirming these predictions with simulations. Hundreds of simulations have been run throughout the course of this project, producing hundreds of gigabytes of data. The University of Chicago Research Computing Cluster has made this process possible. All code presented in this section is available by request at github.com/dp-rice/spatial-simulations. 
 
 
 Our simulations were designed using two distinct frameworks: 
@@ -371,7 +371,10 @@ Figure (\ref{fig:neutral_wf}) neatly demonstrates these properties while also il
 
 \newpage
 \subsection{Simulated sampling}
-This section explores our method for simulating the sampling process inherent in GWAS. Recall that we are interested in the interaction between the underlying distribution of allele frequencies and the distribution of frequencies observed in a population sample (Figure: \ref{fig:sampling_schematic}). We expect the ability to detect alleles in a GWAS sample to depend on the population parameters (particularly the rates of selection and migration) and on the 
+This section describes our method for simulating the sampling process inherent in GWAS. Recall that we are interested in the interaction between the underlying distribution of allele frequencies and the distribution of frequencies observed in a population sample (Figure: \ref{fig:sampling_schematic}). We expect the ability to detect alleles in a GWAS sample to depend on the population parameters (particularly the rates of selection and migration) and on the strategy used to select members of a GWAS corhort. Geography plays a key role in the search of rare disease-causing alleles. Intuitively, \texit{where} researchers sample individuals from and \textit{how many} individuals are sampled from each location determines which alleles are detectable.
+
+
+Essentially, we want to randomly draw alleles from our simulated population according to some sampling probability distribution. We accomplish this by 
 
 
 
