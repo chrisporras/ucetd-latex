@@ -374,9 +374,20 @@ Figure (\ref{fig:neutral_wf}) neatly demonstrates these properties while also il
 This section describes our method for simulating the sampling process inherent in GWAS. Recall that we are interested in the interaction between the underlying distribution of allele frequencies and the distribution of frequencies observed in a population sample (Figure: \ref{fig:sampling_schematic}). We expect the ability to detect alleles in a GWAS sample to depend on the population parameters (particularly the rates of selection and migration) and on the strategy used to select members of a GWAS corhort. Geography plays a key role in the search of rare disease-causing alleles. Intuitively, \texit{where} researchers sample individuals from and \textit{how many} individuals are sampled from each location determines which alleles are detectable.
 
 
-Essentially, we want to randomly draw alleles from our simulated population according to some sampling probability distribution. We accomplish this by 
+Essentially, we want to randomly draw alleles from our simulated population according to some sampling probability distribution. We accomplish this by computing a \textit{convolution} with our allele frequency matrix $\textbf{f}$. A convolution of discrete-valued functions $f$ and $g$ is defined as:
+
+\begin{equation}\label{eq:convolution}
+    (f*g)(r) = \sum_{d=-\infty}^\infty f(r)g(r-d)
+\end{equation}
 
 
+Where $f$ and $g$ are both functions of $r$, the convolution expresses how $g$ changes the shape of $f$ over all $g(r)$. For our model, we assume a Gaussian sampling distribution centered at a deme $\hat{r}$ with a specified standard deviation, or width, $w$. The convolution allows us to compute the average probability of sampling the allele over all possible centers $\hat{r}$. The output of this calculation is another matrix of sampled allele frequencies $\bf{F}$ that is of the same dimensions as $\bf{f}$. The following code snippet shows our implementation of this process using the \code{SciPy} Gaussian convolution filter. 
 
 
-%% End with mentioning Snakemake
+\lstinputlisting[language=iPython, caption = Python script to implement sampling process]{src/sample.py}
+
+
+We can now add $w$ to our list of simulation parameters. Our results primarily focus on exploring the relationships between our population parameters. Altering our parameters changes the allele frequency trajectories observed, providing insight into how the evolutionary process and the sampling process influence allele detection.        
+
+
+%% End with mentioning Snakemake?

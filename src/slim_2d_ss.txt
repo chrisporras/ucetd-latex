@@ -12,7 +12,6 @@ for (line in lines) {
  initializeGenomicElementType("g1", m1, 1.0);
  initializeGenomicElement(g1, 0, 0);
  initializeRecombinationRate(0);
- defineConstant("start", clock());
  defineConstant("numdemes", asInteger(fields[1]));
  defineConstant("demepopsize", asInteger(fields[2]));
  defineConstant("file", filename);
@@ -48,6 +47,5 @@ late() {
  sim.subpopulations.genomes.removeMutations(muts[freqs == 0.5], T);
 }
 20000 late()  {
- cat("\n"+"#"+"Elapsed time: " + (clock() - start) + "\n");
- sim.outputFull();
+sim.outputFull();
 }

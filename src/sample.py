@@ -1,4 +1,4 @@
-    #!python3
+#!python3
 """
     Performs convolution of frequency matrix
     with Gaussian sampling kernel of width w
