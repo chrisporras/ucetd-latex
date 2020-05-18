@@ -383,7 +383,7 @@ This section describes our method for simulating the sampling process inherent i
 Essentially, we want to randomly draw alleles from our simulated population according to some sampling probability distribution. We accomplish this by computing a \textit{convolution} with our allele frequency matrix $\textbf{f}$. A convolution of discrete-valued functions $f$ and $g$ is defined as:
 
 \begin{equation}\label{eq:convolution}
-    (f*g)(r) = \sum_{d=-\infty}^\infty f(r)g(r-d)
+    F(r) = (f*g)(r) = \sum_{d=-\infty}^\infty f(r)g(r-d)
 \end{equation}
 
 
@@ -393,7 +393,14 @@ Where $f$ and $g$ are both functions of $r$, the convolution expresses how $g$ c
 \lstinputlisting[language=iPython, caption = Python script to implement sampling process]{src/sample.py}
 
 
-We can now add $w$ to our list of simulation parameters. Our results primarily focus on exploring the relationships between our population parameters. Altering our parameters changes the allele frequency trajectories observed, providing insight into how the evolutionary process and the sampling process influence allele detection.        
+We can now add $w$ to our list of simulation parameters. We see in figure \ref{fig:sampling_w} that increasing $w$ flattens out the distribution of allele frequencies seen in a one-dimensional spatial model. The broader our sampling width, the harder it is to detect rare, localized alleles. Our results primarily focus on exploring the relationships between our population parameters. Altering our parameters changes the allele frequency trajectories observed, providing insight into how the evolutionary process and the sampling process influence allele detection.    
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.8]{img/sampling_heatmap.JPG}
+    \caption{Increasing $w$ smooths the spatial distribution of allele frequencies. An allele that exists mostly at the center of the one-dimensional simulation is undetectable at broad sampling widths.}
+    \label{fig:sampling_w}
+\end{figure}
 
 
 %% End with mentioning Snakemake?
