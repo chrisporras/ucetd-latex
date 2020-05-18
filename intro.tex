@@ -32,34 +32,37 @@ It was not until Ronald Fisher's 1918 paper "The Correlation between Relatives o
 Fisher, J.B.S. Haldane, and \textcolor{maroon}{University of Chicago} geneticist Sewall Wright are considered to be the founders of the field of population genetics. Population geneticists study genetic differences in and between populations with an often "first principles" approach. The contributions of population genetics tend to be theoretical and mathematical in nature, coercing complex systems like the dynamics of molecular evolution or the identification of multiple coalescent events into models and equations \cite{rice_2016} \cite{rice_2018}. Population genetics is a highly interdisciplinary field, connecting across biology into math, statistics, physics, computer science, and others to understand the forces of nature that shape populations. Truly a rich and exciting field. \cite{gillespie}
 
 \section{Genes and Geography}
-While much of evolutionary theory deals with change over time, populations interact 
-
-Isolation by distance
-
-Novembre et. al.2008
+While much of evolutionary theory deals with change over time, relatively less work has been done to develop theories of change over space. Populations interact with one another across geography and it is clear that distance plays a major role in shaping \textit{population structure}, or the patterns in genetic differences seen over a geographic region. Population geneticists use the term "isolation by distance" (IBD) to refer to the process by which geography alters genetic variation between populations. Populations that are geographically isolated become genetically isolated. \cite{rohlf_1971} \cite{slatkin_1993} 
 
 
-Novembre and Stephens 2008 human genetic data shows continuous spatial structure 
+Population geneticists have designed many valuable approaches to analyze population structure. One of the most common is Wright's fixation index $F_{ST}$. Designed as one of Wright's many F-statistics used to summarize correlations observed in population genetic data. The $F_{ST}$ is given by the equation:
+
+\begin{equation}
+    F_{ST} = \frac{Var[f]_{between}}{Var[f]_{total}}
+\end{equation}
+
+Capturing the ratio in variances of allele frequencies $f$ between populations and within the total population. The $F_{ST}$ ranges from $0$ to $1$ with $1$ denoting populations that are genetically indistinguishable (\textit{panmictic}) and $0$ denoting populations that are completely genetically distinct. $F_{ST}$ for pairs of European populations are mostly very low ($ < 1\%$) \cite{sforza_1994} with some pairs of populations across the globe reaching upwards of $40\%$. Despite humans only having a $ < 1\%$ estimated difference in genomes on average \cite{1k_genomes}, patterns of genetic differences are pronounced. Patterns of genetic differences between populations even provide enough information to recover information about the geographic distance between populations. We present a recreation of the famous Novembre et al. 2008 figure:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale = 0.45]{img/novembre_pca.JPG}
+    \caption{An elegant representation of genetic data demonstrating the geographic information contained in European genomes. A simple transformation of genetic data onto two-axes that explain the majority of the genetic variation between populations (i.e. principal components). Recreated using the PCAviz R package. \cite{pcaviz}}
+    \label{fig:novembre_pca}
+\end{figure}
+
+Genetic information is closely linked to geographic information. Population geneticists have used genetic information to identify historical migration patterns. Computational tools have been developed to estimate migration and highlight features of spatial population structure. \cite{petkova_2016} Early models of spatial evolution assume that populations are discrete and well-mixed \cite{wakeley_2009} \cite{Kingman_1982}, but human genetic data shows continuous spatial structure \cite{novembre_stephens_2008}. We hope to contribute to spatial population genetics and improve the understanding of the forces that shape population structure.
 
 
-A note on
-: Allison Etheridge on Spatial modeling in popgen 
-
-\section{GWAS and Sampling Processes}
-The genomics revolution & GWAS
+\section{GWAS and Sampling}
+Recent advances in sequencing technology have enabled large-scale genomic data collection, spawning the "genomics revolution." With an abundance of genetic information came swathes of analyses and meta-analyses making claims ranging from credible to questionable.\cite{ganna_2019} Genome-wide association studies (GWAS) became king. While GWAS have found thousands of statistically significant single nucleotide polymorphisms (SNPs) associated with particular traits, many criticize geneticists for failing to move beyond identification and into confirmation \cite{visscher_2012}. There is, in general, little follow up to confirm how or why a SNP is associated with a trait. Still, many genetic studies have taken the extra step and made meaningful contributions to health and science \cite{belbin_2017}. These include studies that have identified variants for celiac disease and rheumatoid arthritis, respectively and applied these to develop successful tests for individual patients \cite{abraham_2014} \cite{han_2014}. 
 
 
-Bias in genomic data collection
+One of the problems with GWAS that we are especially interested in is the issue of sampling bias. GWAS data collection requires researchers to select people to enroll in the study. Due to resource limitations, this selection process is typically restricted to specific populations in specific geographic regions. The vast majority of GWAS study European populations \cite{need_2009} \cite{popejoy_2016} leaving the rest of the world largely in the dark. 
 
 
-The Site Frequency Spectrum as a quantitative summary of segregating sites 
+Population geneticists have previously investigated the effect of geographic sampling bias on theoretical models \cite{mcvean_2009}. Some researchers have even shown the effects of sampling bias on distorting population summary statistics like $F_{ST}$ and on simulated GWAS \cite{battey_space_2019}. We hope to expand upon this effort to understand the implications of geographic sampling bias. Our approach to this problem is described in the following section
 
 
-Sampling process distorts important quantities in popgen analyses --- SFS
-
-McVean 2009, Battey 2019 
-
-\newpage
 \section{Project Rationale and Significance}
 %% Need to reformat citations!
 Quantitative and population geneticists are interested in finding statistical associations between genetic variants and particular traits. Genome-wide association studies (GWAS) are one common method for detecting associations and are especially useful when attempting to predict an individual’s risk for disease. Disease GWAS function by comparing a large set of genotypes to the known disease phenotypes of members in the group. If members with a particular allele, or variant of a gene, are shown to have a significantly higher probability of also being in the group with the disease, then the GWAS supports the hypothesis that the allele increases one’s risk of developing the disease. GWAS typically estimate the genetic effects on a phenotype by conducting a linear regression as follows:\cite{dudbridge_2013} \cite{xie_xu_1998}
@@ -72,7 +75,7 @@ Where $\hat{\bf{Y}}$ represents the phenotype expressed as a linear combination 
 
 
 
-Conducting a GWAS requires a large set of genomic data which is gathered by a sampling process. As a result, association studies feature significant geographic sampling bias. For example, the UK BioBank contains samples of people who have migrated to the United Kingdom from around the world, but still represents a small fraction of global diversity [?]. Therefore, it is important to assess if GWAS results from geographically localized studies, such as those from the UK BioBank, can predict disease risk in other geographic regions. This project adds to the existing literature of theoretical models for studying deleterious alleles [8][9][10], but is one of the first to consider the influence of spatial sampling bias. Then, the goal of this project is to create a framework for evaluating how geographic sampling bias may affect the detection of rare deleterious alleles. Towards these ends, we note the following aims:	
+Conducting a GWAS requires a large set of genomic data which is gathered by a sampling process. As a result, association studies feature significant geographic sampling bias. For example, the UK BioBank contains samples of people who have migrated to the United Kingdom from around the world, but still represents a small fraction of global diversity \cite{ukbiobank}. Therefore, it is important to assess if GWAS results from geographically localized studies, such as those from the UK BioBank, can predict disease risk in other geographic regions. This project adds to the existing literature of theoretical models for studying deleterious alleles [8][9][10], but is one of the first to consider the influence of spatial sampling bias. Then, the goal of this project is to create a framework for evaluating how geographic sampling bias may affect the detection of rare deleterious alleles. Towards these ends, we note the following aims:	
 
 \begin{enumerate}
     \item Develop theoretical models to derive the distribution of allele frequencies as a function of the spatial sampling scheme.
