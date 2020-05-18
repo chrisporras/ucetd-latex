@@ -8,7 +8,7 @@ As shown in the previous chapter, our model describes the change in allele frequ
 \end{enumerate}
 
 
-For a more intuitive understanding of what each of these questions represent, let us examine the raw simulation output from our model. We simulate a single genetic locus and record the frequency of the minor, or \textit{focal} allele $f(a)$ after thousands of simulated generations. Allele frequencies vary across geographic position, but tend to be higher in some neighboring demes. This represents the localization of rare alleles observed in natural populations. \cite{1000_genomes} \cite{geerlings_2018} \cite{novembre_marcus_2017} 
+For a more intuitive understanding of what each of these questions represent, let us examine the raw simulation output from our model. We simulate a single genetic locus and record the frequency of the minor, or \textit{focal} allele $f(a)$ after thousands of simulated generations. Allele frequencies vary across geographic position, but tend to be higher in some neighboring demes. This represents the localization of rare alleles observed in natural populations. \cite{1k_genomes} \cite{geerlings_geographic_2018} \cite{marcus_visualizing_2017} 
 
 
 \begin{figure}[h]
@@ -53,7 +53,7 @@ We want to solve this equation for the average, or expected, allele frequency at
 \end{equation}
 
 
-Thus, even with geographic population structure, our model accords with the well-known \textit{mutation-selection balance} result \cite{fisher_1930} in well-mixed populations. The average allele frequency can be approximated as the ratio of the mutation rate to the selection coefficient. As we increase the selection coefficient, selection removes the allele from the population at a faster rate. This implies that the allele will be rarer on average. note that this result is independent of population size and migration. We validate this relationship with simulations:
+Thus, even with geographic population structure, our model accords with the well-known \textit{mutation-selection balance} result \cite{fisher_genetical_1930} in well-mixed populations. The average allele frequency can be approximated as the ratio of the mutation rate to the selection coefficient. As we increase the selection coefficient, selection removes the allele from the population at a faster rate. This implies that the allele will be rarer on average. note that this result is independent of population size and migration. We validate this relationship with simulations:
 
 \begin{figure}[h]
     \centering
@@ -62,7 +62,7 @@ Thus, even with geographic population structure, our model accords with the well
     \label{fig:avg_freq}
 \end{figure}
 
-$\frac{\mu}{s}$ tells us, on average, how much of the allele we expect to observe at any location. The mutation rate in mammalian genomes is approximately constant across genes (order $10^{-9}$ per base pair per year). \cite{kumar_subramanian_2002} \cite{scally_2016} Therefore, the main force driving average allele frequencies is selection. This result validates our previous intuition that large-effect/largely deleterious alleles tend to be rare.
+$\frac{\mu}{s}$ tells us, on average, how much of the allele we expect to observe at any location. The mutation rate in mammalian genomes is approximately constant across genes (order $10^{-9}$ per base pair per year). \cite{kumar_mutation_2002} \cite{scally_mutation_2016} Therefore, the main force driving average allele frequencies is selection. This result validates our previous intuition that large-effect/largely deleterious alleles tend to be rare.
 
 \newpage
 \subsection{The geographic range of the allele}
@@ -110,7 +110,7 @@ Let us explicitly quantify the change in allele frequency correlation for a one-
 We can take advantage of the \textit{translational invariance} in $r$ (symmetric boundaries of the Stepping Stone model) to approximate the correlation function solely in terms of $d$.
 
 \begin{equation}
-    Corr[d] \approx \frac{1}{L} \sum_{r=1}^L (Corr[f_r,f_{r+d}]) = Ce^{\frac{-d}{d_c}} \tag{Kimura and Weiss (1964) \cite{kimura_1964}}
+    Corr[d] \approx \frac{1}{L} \sum_{r=1}^L (Corr[f_r,f_{r+d}]) = Ce^{\frac{-d}{d_c}} \tag{Kimura and Weiss (1964) \cite{kimura_stepping_1964}}
 \end{equation}
 
 We see that correlation is expected to decay exponentially as a function of distance between pairs of demes $d$. Demes that are farther apart in the Stepping Stone model will have approximately independent changes in allele frequencies. Notice that the rate of decay in correlation is determined by a critical distance $d_c$. We define $d_c$ as the following:
@@ -182,7 +182,7 @@ We describe the trade-off between narrow and broad sampling in figure \ref{fig:s
 \newpage
 \section{Measuring Missing Heritability}
 
-In the final section of our results, we describe an application of our theoretical framework to tackle the problem of missing heritability. Upon entering the era of large-scale genomic data collection, researchers were optimistic that the recent plethora of information could effectively be used to explain the genetic basis of complex traits. Genome-wide association studies promised to identify genetic variants associated with disease. While many have provided insight into the genetic architecture of some diseases, most GWAS-identified variants explain little of the total variation in phenotype. \cite{manolio_collins_2009} The remaining, unexplained variation in phenotype has been dubbed "missing heritability" and many studies have recently attempted to solve the problem of missing heritability. \cite{young_2019} 
+In the final section of our results, we describe an application of our theoretical framework to tackle the problem of missing heritability. Upon entering the era of large-scale genomic data collection, researchers were optimistic that the recent plethora of information could effectively be used to explain the genetic basis of complex traits. Genome-wide association studies promised to identify genetic variants associated with disease. While many have provided insight into the genetic architecture of some diseases, most GWAS-identified variants explain little of the total variation in phenotype. \cite{manolio_finding_2009} The remaining, unexplained variation in phenotype has been dubbed "missing heritability" and many studies have recently attempted to solve the problem of missing heritability. \cite{young_solving_2019} 
 
 
 One possible explanation for the missing heritability problem is that rare variants contribute much more strongly to disease risk than previously thought. Rare variants are more difficulty to detect in GWAS, hence they are missing from the set of associated variants for a particular trait. Using our model, we compute the fraction of heritability explained in a "perfect GWAS" where every allele is detectable. 
