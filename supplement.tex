@@ -1,0 +1,125 @@
+\chapter{Supplement}
+\section{Continuous approximation of the Wright-Fisher model}
+In section \ref{section:neutral_wf}, we describe the neutral Wright-Fisher model with discrete time generations. Recall that 
+
+\begin{equation}
+    \tag{\ref{eq:neutral_model} revisited}
+    X_{t+1} | f_t \sim Binom(N,\frac{X_t}{N})
+\end{equation}
+
+Recall the following properties of the neutral Wright-Fisher model. 
+
+\begin{equation}
+    \tag{\ref{eq:ex_drift} revisited}
+    E[f_t] = f_0
+\end{equation}
+
+\begin{equation}
+    \tag{\ref{eq:var_lim_drift} revisited}
+    \lim_{N \to \infty} Var[f_{t+1}|f_t] = 0
+\end{equation}
+
+
+We want an equation that describes the time evolution of the entire distribution of allele frequencies, not just the mean and variance. However, the inclusion of randomness in our model prohibits the use of ordinary differential equations (ODEs) like those commonly written to describe change in more deterministic systems in biology. We will use stochastic calculus to arrive at such an equation.
+
+
+If we assume $N$ to be large and if we re-scale time to be $\frac{t}{N}$, the change in allele frequency over one generation ($dt=\frac{1}{N}$) converges to a Gaussian distribution with mean $\mu_t dt$ and variance $\sigma^2_t dt$. We can then consider changes in allele frequencies due to genetic drift to be continuous and differentiable. Therefore, we can write an equation of the form: 
+
+\begin{equation}
+    df_t = \mu_t \, \,dt + \sigma_t \, \,dB_t
+\end{equation}
+
+
+This equation is a \textit{stochastic differential equation} (SDE) that represents the change in allele frequencies over time. We see a term $\mu_t \, \, dt$ that resembles the form of an ODE, but unlike an ODE we have an added $dB_t$ term scaled by $\sigma_t$. SDEs generalize ordinary differential equations by adding a random Brownian noise term $dB_{t}$. In an infinitesimal time interval $dt$, the noise has mean $0$ and variance $dt$. Solutions to SDEs are time-dependent probability densities rather than functions of time or space, as with an ODE. There exists a well-developed body of theory for solving SDEs in stochastic calculus. One of the theoretical contributions most relevant to this project is \textit{It\^{o}'s lemma}, named after Japanese Mathematician Kiyosi It\^{o}. \cite{ito_stochastic_1944} We will use the lemma to demonstrate exactly what $\mu_t$ and $\sigma_t$ represent. Then we will find the correct $\mu_t$ and $\sigma_t$ for the Wright-Fisher model. 
+
+
+For some function $g(f_t)$ It\^{o}'s lemma gives:
+
+\begin{equation}
+    \begin{split}
+        dg(f_t) 
+                &= \frac{dg}{df_t}df_t + \frac{1}{2} \frac{d^2g}{df_t^2}(df_t)^2 + ... \\
+                &= (\frac{\partial g}{\partial t} + \mu_t \frac{\partial g}{\partial f_t} + \frac{\sigma_t^2}{2} \frac{\partial^2 g}{\partial f_t^2})dt + \sigma_t \frac{\partial g}{\partial f_t}dB_t \\
+                &= (\mu_t \frac{\partial g}{\partial f_t} + \frac{\sigma_t^2}{2} \frac{\partial^2 g}{\partial f_t^2})dt + \sigma_t \frac{\partial g}{\partial f_t}dB_t \\
+    \end{split}
+\end{equation}
+
+
+This is essentially an extension of the chain rule for SDEs. The $\frac{\partial g}{\partial t} = 0$ as $g$ is not an explicit function of $t$. This formulation allows us to examine the expected values $E[g(f_t)]$ for given functions $g$. Note the following and recall that $E[dB_t] = 0$:
+
+\begin{equation}
+    E[dg(f_t)] = (\mu_t \frac{\partial g}{\partial f_t} + \frac{\sigma_t^2}{2} \frac{\partial^2 g}{\partial f_t^2})dt
+\end{equation}
+
+
+Let $g(f_t) = f_t$. This implies $\frac{\partial g}{\partial f} = 1$ and $\frac{\partial^2 g}{\partial f^2} = 0$.
+
+
+\begin{equation}
+    \begin{split}
+         E[dg(f_t)] &= E[df_t] = (\mu_t \times 1 + \frac{\sigma_t^2}{2} \times 0)dt \\
+         & \therefore \mu_t = \frac{E[df_t]}{dt} = \frac{d}{dt}E[f_t]
+    \end{split}
+\end{equation}
+
+
+Leibniz's rule allows us to pull the $\frac{d}{dt}$ out of the expectation. 
+
+
+We now have our $\mu_t$ for the model. $\mu_t$ is defined as the \textit{infinitesimal mean}, or how much the average allele frequency changes at each instant. Recall that we set a constant initial frequency value $f_0$. For the Wright-Fisher model, we have $E[f_t] = f_0$. This implies that $\mu_t = \frac{d}{dt} (f_0) = 0$. Let us now solve for $\sigma_t$.
+
+
+Similarly, we define $g(f_t) = (f_t - f_0)^2$. This implies that $\frac {\partial g}{\partial f} = 2(f_t - f_0)$ and $\frac{\partial^2 g}{\partial f^2} = 2$.
+
+
+\begin{equation}
+    \begin{split}
+         E[dg(f_t)] &= E[d(f_t-f_0)^2] = (\mu_t \times 2(f_t - f_0) + \frac{\sigma_t^2}{2} \times 2)dt \\
+         \implies \sigma_t &= \sqrt{\frac{E[d(f_t-f_0)^2]}{dt}} = \sqrt{\frac{d}{dt}E[(f_t-f_0)^2]} \\
+         &= \sqrt{\frac{d}{dt}E[(f_t-E[f_t])^2]} = \sqrt{\frac{d}{dt}Var(f_t)}
+    \end{split}
+\end{equation}
+
+
+We see that $\sigma_t$ is the \textit{infinitesimal standard deviation}, or the square root of the infinitesimal variance. This represents how far we expect the allele frequency to deviate from the mean at each instant. The SDE is a continuous-time approximation of the discrete-time Markov process we wrote initially. Therefore, we take the limit as $\Delta t \to 0$. The recursive solution of $Var[f_t]$ previously shown becomes:
+
+%% skip Kolmogorov Forward equation
+
+\begin{equation}
+    \begin{split}
+         Var[f_t] &= \frac{f_{t-1}(1-f_{t-1})}{N} \\
+         \implies \frac{d}{dt} Var[f_t] &= \frac{f_t(1-f_t)}{N} \\
+         \therefore \sigma_t &= \sqrt{\frac{f_t(1-f_t)}{N}}
+    \end{split}
+\end{equation}
+
+Finally, we arrive at an SDE for the neutral Wright-Fisher model. This SDE has mean and standard deviation equal to the solved $\mu_t$ and $\sigma_t$ showing that this continuous stochastic process is a good approximation to the discrete, neutral Wright-Fisher model. We drop the subscript $t$ for clarity, noting that this SDE describes continuous change over time. 
+
+\begin{equation}
+    df = \sqrt{\frac{f(1-f)}{N}} dB_t
+\end{equation}
+
+We can expand this SDE according to the Stepping Stone dynamics with selection as described in section \ref{"section:our_model"} as follows: 
+
+\begin{equation}
+    \label{eq:continuous_model}
+    df_r=[\mu(1-2f_r)-sf_r (1-f_r ) + m (f_{r-1}+f_{r+1}-2f_r)]dt+\sqrt{\frac{f_r (1-f_r )}{N}} dB_{t,r}
+\end{equation}
+
+This continuous approximation also has mean and variance equal to the discrete Wright-Fisher model, indicating that this SDE represents a valid approximation.
+
+\section{Continuous-time Simulations}\label{section:slim}
+
+Our model can be simulated with continuous time and space using the \code{SLiM} ("\textbf{S}election on \textbf{Li}nked \textbf{M}utations") framework. \code{SLiM} is a simulation package for population genetics designed by Phillip Messer and Benjamin Haller at Cornell University in 2013.\cite{haller_slim_2019} The package contains a broad range of functionality for simulating the evolution of complex systems. Researchers have used \code{SLiM} to investigate the dynamics of population bottlenecks \cite{pedersen_effect_2017}, ancient human migration \cite{sikora_ancient_2017}, regional heritability mapping \cite{caballero_nature_2015}, and much more. The versatility of \code{SLiM} allows for whole-genome simulations, continuous spatial models, age structure. For our purposes, this added functionality proved unnecessary and we chose to write our own simulation programs in \code{Python}.
+
+Here we describe our use of \code{SLiM} to generate simulations of our model. \code{SLiM} operates with its own scripting language called \code{Eidos} (named after the Platonic forms). This language provides an interface to \code{SLiM} functionality that is flexible, albeit sometimes challenging to work with. The main difficulty with \code{SLiM} is that it requires each evolutionary process to essentially be defined separately from one another. As opposed to writing a single line of code to capture all evolutionary forced of interest, \code{SLiM} requires individual function calls for specifying rates of mutation, migration, selection, etc. Additionally, blocks of code are performed according to the generation time specified. The general schematic is shown:
+
+
+\lstinputlisting[language=Eidos, caption = SLiM simulation script skeleton]{src/slim_skeleton.txt}
+
+An \code{initialize()\{\}} block defines properties of the genomes to simulate (diploid genomes by default). This is executed before the simulation begins to run. Spatial population parameters can be specified at the first generation of the simulation, in the \code{1\{\}} block. Finally, the \code{20000 late()\{\}} block specifies how long to run the simulation for, and what to do at the end of the simulation. We show the script used to simulate the Stepping Stone migration model with expanded Wright-Fisher dynamics (migration, mutation, selection, and genetic drift included). The script reads population parameters from \code{Python} file defined similarly to listing \ref{code:params}. 
+
+\lstinputlisting[language=Eidos, caption = SLiM script used to simulate Wright-Fisher + Stepping Stone model]{src/slim_2d_ss.txt}
+
+
+Clearly, \code{SLiM} code becomes unnecessarily complex for a model that ought to be written in a single line of code. We used \code{SLiM} for our early experimentation, but quickly moved towards writing our own programs once we realized that we don't need much of the added \code{SLiM} functionality. Future directions include taking advantage of \code{SLiM} to incorporate simulations of continuous geographic environments.
