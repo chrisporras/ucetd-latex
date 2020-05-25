@@ -184,6 +184,7 @@
 
 % Usage:
 %	\dedication{dedication text}
+
 \newcommand{\dedication}[1]{\newcommand{\etdDedicationText}{#1}}
 % Usage:
 %	\epigraph{epigraph text}
